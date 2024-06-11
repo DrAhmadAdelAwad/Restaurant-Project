@@ -9,6 +9,10 @@ export const addToCart = asyncHandler(async (req, res, next) => {
     if (!food) {
         return next(new Error("Food Not Found", { cause: 404 }))
     }
+    const checkCart = await cartModel.findById({userId : req.user._id})
+    if(!checkCart) {
+        return next(new Error("Cart Not Found", { cause: 404}))
+    }
     const foodInCart = await cartModel.findOne({ userId: req.user._id, "foods.foodId": foodId })
     if (foodInCart) {
         const isFood = foodInCart.foods.find((food) => food.foodId.toString() == foodId.toString())
